@@ -1,0 +1,84 @@
+<div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="h3 mb-1">Uber — ganancias diarias</h1>
+    <p class="text-secondary mb-0">Cargá el monto al terminar el turno. Se guarda al salir del campo.</p>
+  </div>
+  <div class="total-badge">
+    <span class="label">Total mes</span>
+    <strong>{{ totalFormateado }}</strong>
+  </div>
+</div>
+
+<div class="month-nav d-flex align-items-center justify-content-between gap-2 mb-3">
+  <button type="button" class="btn btn-outline-secondary" (click)="anterior()" [disabled]="cargando">
+    <i class="bi bi-chevron-left"></i>
+    <span class="d-none d-sm-inline"> Anterior</span>
+  </button>
+  <h2 class="h5 mb-0 text-center">{{ tituloMes }}</h2>
+  <button type="button" class="btn btn-outline-secondary" (click)="siguiente()" [disabled]="cargando">
+    <span class="d-none d-sm-inline">Siguiente </span>
+    <i class="bi bi-chevron-right"></i>
+  </button>
+</div>
+
+@if (error) {
+  <div class="alert alert-danger py-2">{{ error }}</div>
+}
+@if (mensaje) {
+  <div class="alert alert-success py-2">{{ mensaje }}</div>
+}
+@if (cargando && !planilla) {
+  <div class="text-center py-5 text-secondary">Cargando planilla…</div>
+}
+
+@if (planilla) {
+  <div class="table-responsive planilla-wrap">
+    <table class="table table-sm table-hover align-middle mb-0">
+      <thead class="table-light sticky-top">
+        <tr>
+          <th style="width: 4rem">Día</th>
+          <th>Fecha</th>
+          <th style="min-width: 9rem">Monto</th>
+          <th style="width: 3rem"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (dia of planilla.dias; track dia.fecha) {
+          <tr [class.row-hoy]="esHoy(dia.fecha)">
+            <td class="fw-semibold">{{ dia.dia }}</td>
+            <td>
+              <span class="d-none d-md-inline">{{ dia.fecha }}</span>
+              <span class="d-md-none">{{ dia.fecha.slice(5) }}</span>
+              @if (esHoy(dia.fecha)) {
+                <span class="badge text-bg-primary ms-1">Hoy</span>
+              }
+            </td>
+            <td>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  inputmode="decimal"
+                  min="0"
+                  step="100"
+                  [(ngModel)]="borradores[dia.fecha]"
+                  (blur)="onBlur(dia)"
+                  [disabled]="guardando[dia.fecha]"
+                  [attr.aria-label]="'Monto del día ' + dia.dia"
+                />
+              </div>
+            </td>
+            <td class="text-center">
+              @if (guardando[dia.fecha]) {
+                <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+              } @else if (dia.monto !== null) {
+                <i class="bi bi-check2 text-success" title="Guardado"></i>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

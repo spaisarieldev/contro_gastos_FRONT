@@ -1,0 +1,74 @@
+<div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="h3 mb-1">Resumen</h1>
+    <p class="text-secondary mb-0">Totales del mes y evolución de ganancias vs gastos.</p>
+  </div>
+</div>
+
+<div class="month-nav d-flex align-items-center justify-content-between gap-2 mb-3">
+  <button type="button" class="btn btn-outline-secondary" (click)="anterior()" [disabled]="cargando">
+    <i class="bi bi-chevron-left"></i>
+  </button>
+  <h2 class="h5 mb-0 text-center">{{ tituloMes }}</h2>
+  <button type="button" class="btn btn-outline-secondary" (click)="siguiente()" [disabled]="cargando">
+    <i class="bi bi-chevron-right"></i>
+  </button>
+</div>
+
+@if (error) {
+  <div class="alert alert-danger py-2">{{ error }}</div>
+}
+
+@if (resumen) {
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="kpi kpi-green">
+        <span>Ganancias Uber</span>
+        <strong>{{ formatear(resumen.totalGanancias) }}</strong>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="kpi kpi-red">
+        <span>Gastos</span>
+        <strong>{{ formatear(resumen.totalGastos) }}</strong>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="kpi" [ngClass]="claseBalance(resumen.balanceNeto)">
+        <span>Balance neto</span>
+        <strong>{{ formatear(resumen.balanceNeto) }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-6">
+      <div class="chart-card">
+        <h3 class="h6 mb-3">Ganancias diarias del mes</h3>
+        <div class="chart-box">
+          <canvas
+            baseChart
+            [data]="chartDiario"
+            [options]="chartOptions"
+            [type]="'bar'"
+          ></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="chart-card">
+        <h3 class="h6 mb-3">Evolución mensual (últimos 12)</h3>
+        <div class="chart-box">
+          <canvas
+            baseChart
+            [data]="chartMensual"
+            [options]="chartOptions"
+            [type]="'bar'"
+          ></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else if (cargando) {
+  <div class="text-center py-5 text-secondary">Cargando resumen…</div>
+}

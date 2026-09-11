@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f4f6f8;
+}
+
+.navbar-brand {
+  letter-spacing: 0.01em;
+}
+
+.nav-link.active {
+  font-weight: 600;
+}
