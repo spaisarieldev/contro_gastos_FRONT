@@ -68,15 +68,19 @@
           <tr [class]="claseFila(gasto.tipo)">
             <td>
               <div class="fw-semibold">{{ gasto.descripcion }}</div>
-              <small class="text-secondary d-md-none">{{ gasto.tipo }} · {{ gasto.fecha }}</small>
+              <small class="text-secondary d-md-none">{{ gasto.tipo }} · {{ formatearFecha(gasto.fecha) }}</small>
             </td>
             <td class="fw-semibold text-nowrap">{{ formatear(gasto.monto) }}</td>
             <td class="d-none d-md-table-cell">
-              <span class="badge" [class.text-bg-info]="gasto.tipo === 'MENSUAL'" [class.text-bg-secondary]="gasto.tipo === 'UNICO'">
+              <span
+                class="badge"
+                [class.badge-mensual]="gasto.tipo === 'MENSUAL'"
+                [class.badge-unico]="gasto.tipo === 'UNICO'"
+              >
                 {{ gasto.tipo }}
               </span>
             </td>
-            <td class="d-none d-sm-table-cell">{{ gasto.fecha }}</td>
+            <td class="d-none d-sm-table-cell">{{ formatearFecha(gasto.fecha) }}</td>
             <td>
               <input
                 class="form-check-input"

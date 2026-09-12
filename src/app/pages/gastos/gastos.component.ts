@@ -11,6 +11,7 @@ import {
 import {
   etiquetarMes,
   formatearDinero,
+  formatearFechaDisplay,
   mesAnterior,
   mesSiguiente,
 } from '../../core/date-utils';
@@ -45,15 +46,18 @@ export class GastosComponent implements OnInit {
   }
 
   formatear = formatearDinero;
+  formatearFecha = formatearFechaDisplay;
 
   private formVacio(): CreateGastoPayload {
-    const y = this.anio;
-    const m = String(this.mes).padStart(2, '0');
+    const hoy = new Date();
+    const y = hoy.getFullYear();
+    const m = String(hoy.getMonth() + 1).padStart(2, '0');
+    const d = String(hoy.getDate()).padStart(2, '0');
     return {
       descripcion: '',
       monto: 0,
       tipo: 'UNICO',
-      fecha: `${y}-${m}-01`,
+      fecha: `${y}-${m}-${d}`,
       pagado: false,
     };
   }

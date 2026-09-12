@@ -9,14 +9,12 @@
   </div>
 </div>
 
-<div class="month-nav d-flex align-items-center justify-content-between gap-2 mb-3">
-  <button type="button" class="btn btn-outline-secondary" (click)="anterior()" [disabled]="cargando">
+<div class="month-nav">
+  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="anterior()" [disabled]="cargando">
     <i class="bi bi-chevron-left"></i>
-    <span class="d-none d-sm-inline"> Anterior</span>
   </button>
-  <h2 class="h5 mb-0 text-center">{{ tituloMes }}</h2>
-  <button type="button" class="btn btn-outline-secondary" (click)="siguiente()" [disabled]="cargando">
-    <span class="d-none d-sm-inline">Siguiente </span>
+  <h2 class="h6 mb-0 text-nowrap">{{ tituloMes }}</h2>
+  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="siguiente()" [disabled]="cargando">
     <i class="bi bi-chevron-right"></i>
   </button>
 </div>
@@ -32,44 +30,69 @@
 }
 
 @if (planilla) {
-  <div class="table-responsive planilla-wrap">
-    <table class="table table-sm table-hover align-middle mb-0">
-      <thead class="table-light sticky-top">
+  <div class="planilla-wrap">
+    <table class="planilla-table">
+      <thead>
         <tr>
-          <th style="width: 4rem">Día</th>
+          <th>Día</th>
           <th>Fecha</th>
-          <th style="min-width: 9rem">Monto</th>
-          <th style="width: 3rem"></th>
+          <th>Día sem.</th>
+          <th class="col-actual-gasto">{{ tituloColumnaActualGasto }}</th>
+          <th>Monto</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         @for (dia of planilla.dias; track dia.fecha) {
-          <tr [class.row-hoy]="esHoy(dia.fecha)">
-            <td class="fw-semibold">{{ dia.dia }}</td>
-            <td>
-              <span class="d-none d-md-inline">{{ dia.fecha }}</span>
-              <span class="d-md-none">{{ dia.fecha.slice(5) }}</span>
+          <tr
+            [class.row-hoy]="esHoy(dia.fecha)"
+            [class.row-activa]="fechaActiva === dia.fecha"
+            [class.row-futuro]="esFechaFutura(dia.fecha)"
+          >
+            <td class="celda-dia">{{ dia.dia }}</td>
+            <td class="celda-fecha">
+              {{ formatearFecha(dia.fecha) }}
               @if (esHoy(dia.fecha)) {
-                <span class="badge text-bg-primary ms-1">Hoy</span>
+                <span class="badge-hoy">Hoy</span>
               }
             </td>
-            <td>
-              <div class="input-group input-group-sm">
-                <span class="input-group-text">$</span>
+            <td class="celda-semana">{{ diaSemana(dia.fecha) }}</td>
+            <td class="celda-actual-gasto">
+              @if (esFechaFutura(dia.fecha)) {
+                <span class="text-muted">—</span>
+              } @else {
+                <div
+                  class="barra-progreso"
+                  [class.completa]="porcentajeHasta(dia.dia) >= 100"
+                  [attr.aria-valuenow]="porcentajeHasta(dia.dia)"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  role="progressbar"
+                  [attr.aria-label]="'Progreso: ' + formatearPorcentaje(dia.dia)"
+                >
+                  <div class="barra-fill" [style.width.%]="anchoBarraHasta(dia.dia)"></div>
+                  <span class="barra-pct">{{ formatearPorcentaje(dia.dia) }}</span>
+                </div>
+              }
+            </td>
+            <td class="celda-monto">
+              <label class="monto-field" [class.deshabilitado]="esFechaFutura(dia.fecha)">
+                <span class="monto-prefix">$</span>
                 <input
                   type="number"
-                  class="form-control"
-                  inputmode="decimal"
+                  inputmode="numeric"
                   min="0"
-                  step="100"
+                  max="9999999"
+                  step="1"
                   [(ngModel)]="borradores[dia.fecha]"
+                  (focus)="onFocusMonto(dia.fecha)"
                   (blur)="onBlur(dia)"
-                  [disabled]="guardando[dia.fecha]"
+                  [disabled]="guardando[dia.fecha] || esFechaFutura(dia.fecha)"
                   [attr.aria-label]="'Monto del día ' + dia.dia"
                 />
-              </div>
+              </label>
             </td>
-            <td class="text-center">
+            <td class="celda-ok">
               @if (guardando[dia.fecha]) {
                 <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
               } @else if (dia.monto !== null) {

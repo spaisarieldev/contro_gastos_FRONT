@@ -41,3 +41,32 @@ export function formatearDinero(valor: number | null | undefined): string {
     maximumFractionDigits: 0,
   }).format(valor);
 }
+
+/** Convierte YYYY-MM-DD → DD-MM-AAAA */
+export function formatearFechaDisplay(fechaIso: string): string {
+  const [anio, mes, dia] = fechaIso.split('-');
+  if (!anio || !mes || !dia) {
+    return fechaIso;
+  }
+  return `${dia}-${mes}-${anio}`;
+}
+
+const DIAS_SEMANA = [
+  'Domingo',
+  'Lunes',
+  'Martes',
+  'Miércoles',
+  'Jueves',
+  'Viernes',
+  'Sábado',
+];
+
+/** Convierte YYYY-MM-DD → nombre del día de la semana */
+export function nombreDiaSemana(fechaIso: string): string {
+  const [anio, mes, dia] = fechaIso.split('-').map(Number);
+  if (!anio || !mes || !dia) {
+    return '';
+  }
+  const fecha = new Date(Date.UTC(anio, mes - 1, dia));
+  return DIAS_SEMANA[fecha.getUTCDay()];
+}

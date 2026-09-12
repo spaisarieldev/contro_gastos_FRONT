@@ -61,6 +61,13 @@ export class DashboardComponent implements OnInit {
     return etiquetarMes(this.anio, this.mes);
   }
 
+  get tituloMesGastos(): string {
+    if (!this.resumen) {
+      return '';
+    }
+    return etiquetarMes(this.resumen.anioGastos, this.resumen.mesGastos);
+  }
+
   formatear = formatearDinero;
 
   cargar(): void {
@@ -97,13 +104,13 @@ export class DashboardComponent implements OnInit {
           datasets: [
             {
               data: data.meses.map((m) => m.totalGanancias),
-              label: 'Ganancias',
+              label: 'Ganancias del mes',
               backgroundColor: 'rgba(25, 135, 84, 0.7)',
               borderRadius: 4,
             },
             {
               data: data.meses.map((m) => m.totalGastos),
-              label: 'Gastos',
+              label: 'Gastos del mes siguiente',
               backgroundColor: 'rgba(220, 53, 69, 0.65)',
               borderRadius: 4,
             },

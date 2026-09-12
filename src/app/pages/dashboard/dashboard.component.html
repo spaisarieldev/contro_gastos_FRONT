@@ -1,7 +1,9 @@
 <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
   <div>
     <h1 class="h3 mb-1">Resumen</h1>
-    <p class="text-secondary mb-0">Totales del mes y evolución de ganancias vs gastos.</p>
+    <p class="text-secondary mb-0">
+      Lo que ganás en un mes cubre los gastos del mes siguiente.
+    </p>
   </div>
 </div>
 
@@ -20,23 +22,36 @@
 }
 
 @if (resumen) {
+  <p class="text-secondary small mb-3">
+    Comparando ganancias de <strong>{{ tituloMes }}</strong>
+    con gastos de <strong>{{ tituloMesGastos }}</strong>.
+  </p>
+
   <div class="row g-3 mb-4">
     <div class="col-md-4">
       <div class="kpi kpi-green">
-        <span>Ganancias Uber</span>
+        <span>Ganancias {{ tituloMes }}</span>
         <strong>{{ formatear(resumen.totalGanancias) }}</strong>
       </div>
     </div>
     <div class="col-md-4">
       <div class="kpi kpi-red">
-        <span>Gastos</span>
+        <span>Gastos {{ tituloMesGastos }}</span>
         <strong>{{ formatear(resumen.totalGastos) }}</strong>
       </div>
     </div>
     <div class="col-md-4">
       <div class="kpi" [ngClass]="claseBalance(resumen.balanceNeto)">
-        <span>Balance neto</span>
-        <strong>{{ formatear(resumen.balanceNeto) }}</strong>
+        @if (resumen.faltaCubrir > 0) {
+          <span>Falta cubrir</span>
+          <strong>{{ formatear(resumen.faltaCubrir) }}</strong>
+        } @else if (resumen.sobrante > 0) {
+          <span>Sobrante</span>
+          <strong>{{ formatear(resumen.sobrante) }}</strong>
+        } @else {
+          <span>Cubierto</span>
+          <strong>{{ formatear(0) }}</strong>
+        }
       </div>
     </div>
   </div>
@@ -44,7 +59,7 @@
   <div class="row g-3">
     <div class="col-lg-6">
       <div class="chart-card">
-        <h3 class="h6 mb-3">Ganancias diarias del mes</h3>
+        <h3 class="h6 mb-3">Ganancias diarias — {{ tituloMes }}</h3>
         <div class="chart-box">
           <canvas
             baseChart
@@ -57,7 +72,7 @@
     </div>
     <div class="col-lg-6">
       <div class="chart-card">
-        <h3 class="h6 mb-3">Evolución mensual (últimos 12)</h3>
+        <h3 class="h6 mb-3">Evolución: ganado (mes) vs gastos (mes siguiente)</h3>
         <div class="chart-box">
           <canvas
             baseChart
