@@ -17,7 +17,18 @@
   }
 }
 
+.month-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  margin-bottom: 1rem;
+}
+
 .planilla-wrap {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
   border: 1px solid #dee2e6;
   border-radius: 0.75rem;
   max-height: calc(100vh - 14rem);
@@ -25,14 +36,199 @@
   background: #fff;
 }
 
-.row-hoy {
-  background-color: #e7f1ff !important;
+/* inline-table: la tabla NO se estira al 100% del contenedor */
+.planilla-table {
+  display: inline-table;
+  width: auto;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+  th,
+  td {
+    padding: 0.35rem 0.55rem;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #f8f9fa;
+    font-weight: 600;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
 }
 
-.table th {
+.row-hoy {
+  background-color: #e7f1ff;
+}
+
+.row-activa {
+  background-color: #fff3cd !important;
+}
+
+.row-activa .monto-field {
+  border-color: #ffc107;
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.25);
+}
+
+.row-futuro {
+  color: #adb5bd;
+  background-color: #f8f9fa;
+}
+
+.monto-field.deshabilitado {
+  background: #f1f3f5;
+  border-color: #e9ecef;
+  cursor: not-allowed;
+
+  .monto-prefix {
+    background: #e9ecef;
+    color: #adb5bd;
+  }
+
+  input:disabled {
+    cursor: not-allowed;
+    color: #adb5bd;
+  }
+}
+
+.celda-dia {
+  font-weight: 600;
+  text-align: center;
+}
+
+.celda-fecha {
+  font-variant-numeric: tabular-nums;
+}
+
+.celda-semana {
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.col-actual-gasto {
+  font-size: 0.75rem;
+  max-width: 11rem;
+  white-space: normal !important;
+  line-height: 1.2;
+}
+
+.celda-actual-gasto {
+  min-width: 8.5rem;
   white-space: nowrap;
 }
 
-input[type='number'] {
-  font-size: 1rem;
+.barra-progreso {
+  position: relative;
+  display: block;
+  width: 8.5rem;
+  height: 1.35rem;
+  border-radius: 0.35rem;
+  background: #e9ecef;
+  overflow: hidden;
+
+  .barra-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    height: 100%;
+    background: #0d6efd;
+    transition: width 0.2s ease;
+  }
+
+  .barra-pct {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #212529;
+    text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+    z-index: 1;
+    line-height: 1;
+  }
+
+  &.completa .barra-fill {
+    background: #198754;
+  }
+}
+
+.badge-hoy {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.35rem;
+  background: #0d6efd;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.celda-monto {
+  width: 1%;
+}
+
+.monto-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  background: #fff;
+  overflow: hidden;
+  margin: 0;
+
+  .monto-prefix {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.35rem;
+    background: #e9ecef;
+    border-right: 1px solid #ced4da;
+    color: #495057;
+    font-size: 0.85rem;
+    line-height: 1;
+    height: 1.85rem;
+  }
+
+  input {
+    width: 7.5ch;
+    min-width: 7.5ch;
+    max-width: 7.5ch;
+    height: 1.85rem;
+    border: 0;
+    outline: 0;
+    padding: 0 0.3rem;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    background: transparent;
+
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    &:disabled {
+      background: #f8f9fa;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.celda-ok {
+  width: 1.5rem;
+  text-align: center;
 }

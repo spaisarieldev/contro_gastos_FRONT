@@ -55,9 +55,13 @@ export interface UpdateGastoPayload {
 export interface ResumenMes {
   anio: number;
   mes: number;
+  anioGastos: number;
+  mesGastos: number;
   totalGanancias: number;
   totalGastos: number;
   balanceNeto: number;
+  faltaCubrir: number;
+  sobrante: number;
   evolucionDiaria: { dia: number; fecha: string; monto: number }[];
 }
 
@@ -65,9 +69,14 @@ export interface EvolucionMensual {
   meses: {
     anio: number;
     mes: number;
+    anioGastos: number;
+    mesGastos: number;
     etiqueta: string;
+    etiquetaGastos: string;
     totalGanancias: number;
     totalGastos: number;
     balanceNeto: number;
+    faltaCubrir: number;
+    sobrante: number;
   }[];
 }
