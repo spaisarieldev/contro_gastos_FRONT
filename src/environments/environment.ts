@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://gastos-backend-ys42.onrender.com',
+  apiUrl: 'http://localhost:3000',
 };
