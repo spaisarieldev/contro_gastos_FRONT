@@ -3,6 +3,7 @@ export interface DiaGanancia {
   fecha: string;
   id: number | null;
   monto: number | null;
+  viajes: number | null;
 }
 
 export interface PlanillaGanancias {

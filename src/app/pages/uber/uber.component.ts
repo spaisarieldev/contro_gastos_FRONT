@@ -27,6 +27,7 @@ export class UberComponent implements OnInit {
   mes = new Date().getMonth() + 1;
   planilla: PlanillaGanancias | null = null;
   borradores: Record<string, number | null> = {};
+  borradoresViajes: Record<string, number | null> = {};
   guardando: Record<string, boolean> = {};
   cargando = false;
   error = '';
@@ -47,17 +48,114 @@ export class UberComponent implements OnInit {
     return etiquetarMes(this.anio, this.mes);
   }
 
-  get nombreMesSiguiente(): string {
-    const next = mesSiguiente(this.anio, this.mes);
-    return NOMBRES_MES[next.mes - 1].toUpperCase();
+  get nombreMesActual(): string {
+    return NOMBRES_MES[this.mes - 1];
   }
 
-  get tituloColumnaActualGasto(): string {
-    return `ACTUAL - GASTO ${this.nombreMesSiguiente}`;
+  get nombreMesSiguiente(): string {
+    const next = mesSiguiente(this.anio, this.mes);
+    return NOMBRES_MES[next.mes - 1];
   }
 
   get totalFormateado(): string {
     return formatearDinero(this.planilla?.total ?? 0);
+  }
+
+  get gastosSiguienteFormateado(): string {
+    return formatearDinero(this.totalGastosSiguiente);
+  }
+
+  /** Total actual del mes (borradores en pantalla). */
+  get totalActual(): number {
+    if (!this.planilla) {
+      return 0;
+    }
+    let total = 0;
+    for (const dia of this.planilla.dias) {
+      const valor = this.borradores[dia.fecha];
+      if (valor !== null && valor !== undefined && !Number.isNaN(Number(valor))) {
+        total += Number(valor);
+      }
+    }
+    return total;
+  }
+
+  /** Suma de viajes cargados en el mes en vista. */
+  get totalViajes(): number {
+    if (!this.planilla) {
+      return 0;
+    }
+    let total = 0;
+    for (const dia of this.planilla.dias) {
+      const valor = this.borradoresViajes[dia.fecha];
+      if (valor !== null && valor !== undefined && !Number.isNaN(Number(valor))) {
+        total += Number(valor);
+      }
+    }
+    return total;
+  }
+
+  /** Porcentaje del objetivo mensual cumplido. */
+  get porcentajeObjetivo(): number {
+    if (this.totalGastosSiguiente <= 0) {
+      return 0;
+    }
+    return (this.totalActual / this.totalGastosSiguiente) * 100;
+  }
+
+  get anchoBarraObjetivo(): number {
+    return Math.min(this.porcentajeObjetivo, 100);
+  }
+
+  get porcentajeObjetivoFormateado(): string {
+    const pct = this.porcentajeObjetivo;
+    if (!Number.isFinite(pct)) {
+      return '0%';
+    }
+    return `${Math.round(pct)}%`;
+  }
+
+  /** Monto que falta para cubrir el gasto del mes siguiente. */
+  get faltaAlObjetivo(): number {
+    return Math.max(0, this.totalGastosSiguiente - this.totalActual);
+  }
+
+  /**
+   * Días restantes del mes en vista (incluye hoy si es el mes actual).
+   * Meses pasados → 0; meses futuros → todos los días del mes.
+   */
+  get diasRestantes(): number {
+    const ultimoDia = new Date(this.anio, this.mes, 0).getDate();
+    const hoy = new Date();
+    const anioHoy = hoy.getFullYear();
+    const mesHoy = hoy.getMonth() + 1;
+    const diaHoy = hoy.getDate();
+
+    if (this.anio > anioHoy || (this.anio === anioHoy && this.mes > mesHoy)) {
+      return ultimoDia;
+    }
+    if (this.anio < anioHoy || (this.anio === anioHoy && this.mes < mesHoy)) {
+      return 0;
+    }
+    return Math.max(0, ultimoDia - diaHoy + 1);
+  }
+
+  get promedioDiarioNecesario(): number | null {
+    if (this.diasRestantes <= 0) {
+      return null;
+    }
+    if (this.faltaAlObjetivo <= 0) {
+      return 0;
+    }
+    return Math.ceil(this.faltaAlObjetivo / this.diasRestantes);
+  }
+
+  get promedioDiarioFormateado(): string {
+    const promedio = this.promedioDiarioNecesario;
+    if (promedio === null) {
+      return '—';
+    }
+    return formatearDinero(promedio);
   }
 
   formatearFecha = formatearFechaDisplay;
@@ -77,8 +175,10 @@ export class UberComponent implements OnInit {
         this.planilla = ganancias;
         this.totalGastosSiguiente = gastos.total;
         this.borradores = {};
+        this.borradoresViajes = {};
         for (const dia of ganancias.dias) {
           this.borradores[dia.fecha] = dia.monto;
+          this.borradoresViajes[dia.fecha] = dia.viajes ?? null;
         }
         this.cargando = false;
       },
@@ -87,47 +187,6 @@ export class UberComponent implements OnInit {
         this.cargando = false;
       },
     });
-  }
-
-  /**
-   * Suma de montos desde el día 1 hasta el día indicado (inclusive).
-   */
-  acumuladoHasta(diaHasta: number): number {
-    if (!this.planilla) {
-      return 0;
-    }
-    let total = 0;
-    for (const dia of this.planilla.dias) {
-      if (dia.dia > diaHasta) {
-        break;
-      }
-      const valor = this.borradores[dia.fecha];
-      if (valor !== null && valor !== undefined && !Number.isNaN(Number(valor))) {
-        total += Number(valor);
-      }
-    }
-    return total;
-  }
-
-  /** Porcentaje recaudado respecto al gasto del mes siguiente (0–100+). */
-  porcentajeHasta(diaHasta: number): number {
-    if (this.totalGastosSiguiente <= 0) {
-      return 0;
-    }
-    return (this.acumuladoHasta(diaHasta) / this.totalGastosSiguiente) * 100;
-  }
-
-  /** Ancho visual de la barra (tope 100%). */
-  anchoBarraHasta(diaHasta: number): number {
-    return Math.min(this.porcentajeHasta(diaHasta), 100);
-  }
-
-  formatearPorcentaje(diaHasta: number): string {
-    const pct = this.porcentajeHasta(diaHasta);
-    if (!Number.isFinite(pct)) {
-      return '0%';
-    }
-    return `${Math.round(pct)}%`;
   }
 
   anterior(): void {
@@ -173,29 +232,39 @@ export class UberComponent implements OnInit {
     if (this.esFechaFutura(dia.fecha)) {
       return;
     }
-    const valor = this.borradores[dia.fecha];
-    const montoActual = dia.monto;
 
-    if (valor === null || valor === undefined || Number.isNaN(Number(valor))) {
-      if (montoActual !== null) {
+    const valorMonto = this.borradores[dia.fecha];
+    const valorViajes = this.borradoresViajes[dia.fecha];
+    const montoVacio =
+      valorMonto === null || valorMonto === undefined || Number.isNaN(Number(valorMonto));
+    const viajesVacios =
+      valorViajes === null || valorViajes === undefined || Number.isNaN(Number(valorViajes));
+
+    if (montoVacio) {
+      if (dia.monto !== null || dia.viajes !== null) {
         this.borrar(dia);
+      } else {
+        this.borradoresViajes[dia.fecha] = null;
       }
       return;
     }
 
-    const monto = Math.min(Math.floor(Number(valor)), 9_999_999);
+    const monto = Math.min(Math.floor(Number(valorMonto)), 9_999_999);
+    const viajes = viajesVacios ? null : Math.min(Math.floor(Number(valorViajes)), 9_999);
     this.borradores[dia.fecha] = monto;
-    if (monto === montoActual) {
+    this.borradoresViajes[dia.fecha] = viajes;
+
+    if (monto === dia.monto && viajes === (dia.viajes ?? null)) {
       return;
     }
 
-    this.guardar(dia.fecha, monto);
+    this.guardar(dia.fecha, monto, viajes);
   }
 
-  guardar(fecha: string, monto: number): void {
+  guardar(fecha: string, monto: number, viajes: number | null): void {
     this.guardando[fecha] = true;
     this.mensaje = '';
-    this.gananciasService.upsert(fecha, monto).subscribe({
+    this.gananciasService.upsert(fecha, monto, viajes).subscribe({
       next: () => {
         this.guardando[fecha] = false;
         this.mensaje = `Guardado ${formatearFechaDisplay(fecha)}`;
@@ -214,6 +283,7 @@ export class UberComponent implements OnInit {
       next: () => {
         this.guardando[dia.fecha] = false;
         this.borradores[dia.fecha] = null;
+        this.borradoresViajes[dia.fecha] = null;
         this.cargar();
       },
       error: () => {

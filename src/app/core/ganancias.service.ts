@@ -15,11 +15,15 @@ export class GananciasService {
     return this.http.get<PlanillaGanancias>(this.baseUrl, { params });
   }
 
-  upsert(fecha: string, monto: number): Observable<{ id: number; fecha: string; monto: number }> {
-    return this.http.put<{ id: number; fecha: string; monto: number }>(this.baseUrl, {
-      fecha,
-      monto,
-    });
+  upsert(
+    fecha: string,
+    monto: number,
+    viajes: number | null,
+  ): Observable<{ id: number; fecha: string; monto: number; viajes: number | null }> {
+    return this.http.put<{ id: number; fecha: string; monto: number; viajes: number | null }>(
+      this.baseUrl,
+      { fecha, monto, viajes },
+    );
   }
 
   eliminar(fecha: string): Observable<{ ok: boolean }> {

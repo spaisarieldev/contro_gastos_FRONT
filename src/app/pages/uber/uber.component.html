@@ -1,13 +1,38 @@
-<div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
-  <div>
-    <h1 class="h3 mb-1">Uber — ganancias diarias</h1>
-    <p class="text-secondary mb-0">Cargá el monto al terminar el turno. Se guarda al salir del campo.</p>
+@if (planilla) {
+  <div class="header-badges mb-3">
+    <div class="total-badge avance-badge" [class.completa]="porcentajeObjetivo >= 100">
+      <span class="label">Avance objetivo</span>
+      <div
+        class="barra-progreso"
+        [class.completa]="porcentajeObjetivo >= 100"
+        [attr.aria-valuenow]="porcentajeObjetivo"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        role="progressbar"
+        [attr.aria-label]="'Progreso: ' + porcentajeObjetivoFormateado"
+      >
+        <div class="barra-fill" [style.width.%]="anchoBarraObjetivo"></div>
+        <span class="barra-pct">{{ porcentajeObjetivoFormateado }}</span>
+      </div>
+    </div>
+    <div class="total-badge viajes-badge">
+      <span class="label">Viajes {{ nombreMesActual }}</span>
+      <strong>{{ totalViajes }}</strong>
+    </div>
+    <div class="total-badge promedio-badge">
+      <span class="label">Promedio diario necesario</span>
+      <strong>{{ promedioDiarioFormateado }}</strong>
+    </div>
+    <div class="total-badge ganancia-badge">
+      <span class="label">Ganancia {{ nombreMesActual }}</span>
+      <strong>{{ totalFormateado }}</strong>
+    </div>
+    <div class="total-badge gastos-badge">
+      <span class="label">Gastos {{ nombreMesSiguiente }}</span>
+      <strong>{{ gastosSiguienteFormateado }}</strong>
+    </div>
   </div>
-  <div class="total-badge">
-    <span class="label">Total mes</span>
-    <strong>{{ totalFormateado }}</strong>
-  </div>
-</div>
+}
 
 <div class="month-nav">
   <button type="button" class="btn btn-outline-secondary btn-sm" (click)="anterior()" [disabled]="cargando">
@@ -37,7 +62,7 @@
           <th>Día</th>
           <th>Fecha</th>
           <th>Día sem.</th>
-          <th class="col-actual-gasto">{{ tituloColumnaActualGasto }}</th>
+          <th>Viajes</th>
           <th>Monto</th>
           <th></th>
         </tr>
@@ -57,23 +82,21 @@
               }
             </td>
             <td class="celda-semana">{{ diaSemana(dia.fecha) }}</td>
-            <td class="celda-actual-gasto">
-              @if (esFechaFutura(dia.fecha)) {
-                <span class="text-muted">—</span>
-              } @else {
-                <div
-                  class="barra-progreso"
-                  [class.completa]="porcentajeHasta(dia.dia) >= 100"
-                  [attr.aria-valuenow]="porcentajeHasta(dia.dia)"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  role="progressbar"
-                  [attr.aria-label]="'Progreso: ' + formatearPorcentaje(dia.dia)"
-                >
-                  <div class="barra-fill" [style.width.%]="anchoBarraHasta(dia.dia)"></div>
-                  <span class="barra-pct">{{ formatearPorcentaje(dia.dia) }}</span>
-                </div>
-              }
+            <td class="celda-viajes">
+              <label class="viajes-field" [class.deshabilitado]="esFechaFutura(dia.fecha)">
+                <input
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  max="9999"
+                  step="1"
+                  [(ngModel)]="borradoresViajes[dia.fecha]"
+                  (focus)="onFocusMonto(dia.fecha)"
+                  (blur)="onBlur(dia)"
+                  [disabled]="guardando[dia.fecha] || esFechaFutura(dia.fecha)"
+                  [attr.aria-label]="'Viajes del día ' + dia.dia"
+                />
+              </label>
             </td>
             <td class="celda-monto">
               <label class="monto-field" [class.deshabilitado]="esFechaFutura(dia.fecha)">
