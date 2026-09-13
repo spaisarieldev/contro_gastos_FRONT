@@ -155,8 +155,18 @@
 }
 
 .row-futuro {
-  color: #adb5bd;
   background-color: #f8f9fa;
+}
+
+.viajes-field.valor-futuro,
+.monto-field.valor-futuro {
+  .monto-prefix {
+    color: #adb5bd;
+  }
+
+  input {
+    color: #adb5bd;
+  }
 }
 
 .monto-field.deshabilitado {

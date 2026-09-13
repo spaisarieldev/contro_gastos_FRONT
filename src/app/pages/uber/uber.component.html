@@ -83,7 +83,7 @@
             </td>
             <td class="celda-semana">{{ diaSemana(dia.fecha) }}</td>
             <td class="celda-viajes">
-              <label class="viajes-field" [class.deshabilitado]="esFechaFutura(dia.fecha)">
+              <label class="viajes-field" [class.valor-futuro]="esFechaFutura(dia.fecha)">
                 <input
                   type="number"
                   inputmode="numeric"
@@ -93,13 +93,13 @@
                   [(ngModel)]="borradoresViajes[dia.fecha]"
                   (focus)="onFocusMonto(dia.fecha)"
                   (blur)="onBlur(dia)"
-                  [disabled]="guardando[dia.fecha] || esFechaFutura(dia.fecha)"
+                  [disabled]="guardando[dia.fecha]"
                   [attr.aria-label]="'Viajes del día ' + dia.dia"
                 />
               </label>
             </td>
             <td class="celda-monto">
-              <label class="monto-field" [class.deshabilitado]="esFechaFutura(dia.fecha)">
+              <label class="monto-field" [class.valor-futuro]="esFechaFutura(dia.fecha)">
                 <span class="monto-prefix">$</span>
                 <input
                   type="number"
@@ -110,7 +110,7 @@
                   [(ngModel)]="borradores[dia.fecha]"
                   (focus)="onFocusMonto(dia.fecha)"
                   (blur)="onBlur(dia)"
-                  [disabled]="guardando[dia.fecha] || esFechaFutura(dia.fecha)"
+                  [disabled]="guardando[dia.fecha]"
                   [attr.aria-label]="'Monto del día ' + dia.dia"
                 />
               </label>

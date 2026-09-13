@@ -207,7 +207,7 @@ export class UberComponent implements OnInit {
     return fecha === this.fechaHoyIso();
   }
 
-  /** Días posteriores a hoy: no se puede cargar monto. */
+  /** Días posteriores a hoy (solo para estilo visual). */
   esFechaFutura(fecha: string): boolean {
     return fecha > this.fechaHoyIso();
   }
@@ -221,17 +221,11 @@ export class UberComponent implements OnInit {
   }
 
   onFocusMonto(fecha: string): void {
-    if (this.esFechaFutura(fecha)) {
-      return;
-    }
     this.fechaActiva = fecha;
   }
 
   onBlur(dia: DiaGanancia): void {
     this.fechaActiva = null;
-    if (this.esFechaFutura(dia.fecha)) {
-      return;
-    }
 
     const valorMonto = this.borradores[dia.fecha];
     const valorViajes = this.borradoresViajes[dia.fecha];
