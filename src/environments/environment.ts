@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://spaisariel.com',
+  apiUrl: 'https://gastos-backend-ys42.onrender.com',
 };
