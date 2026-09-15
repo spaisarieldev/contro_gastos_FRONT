@@ -14,7 +14,7 @@ export interface PlanillaGanancias {
   dias: DiaGanancia[];
 }
 
-export type TipoGasto = 'MENSUAL' | 'UNICO';
+export type TipoGasto = 'MENSUAL' | 'UNICO' | 'DIARIO';
 
 export interface Gasto {
   id: number;
@@ -33,6 +33,7 @@ export interface PlanillaGastos {
   total: number;
   totalPagado: number;
   totalPendiente: number;
+  totalDiarios: number;
   gastos: Gasto[];
 }
 
@@ -59,6 +60,8 @@ export interface ResumenMes {
   anioGastos: number;
   mesGastos: number;
   totalGanancias: number;
+  totalGastosDiarios: number;
+  disponible: number;
   totalGastos: number;
   balanceNeto: number;
   faltaCubrir: number;
@@ -75,6 +78,8 @@ export interface EvolucionMensual {
     etiqueta: string;
     etiquetaGastos: string;
     totalGanancias: number;
+    totalGastosDiarios: number;
+    disponible: number;
     totalGastos: number;
     balanceNeto: number;
     faltaCubrir: number;

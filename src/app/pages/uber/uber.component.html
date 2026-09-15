@@ -27,8 +27,16 @@
       <span class="label">Ganancia {{ nombreMesActual }}</span>
       <strong>{{ totalFormateado }}</strong>
     </div>
+    <div class="total-badge diario-badge">
+      <span class="label">Día a día {{ nombreMesActual }}</span>
+      <strong>{{ gastosDiariosFormateado }}</strong>
+    </div>
+    <div class="total-badge disponible-badge">
+      <span class="label">Disponible ahora</span>
+      <strong>{{ disponibleFormateado }}</strong>
+    </div>
     <div class="total-badge gastos-badge">
-      <span class="label">Gastos {{ nombreMesSiguiente }}</span>
+      <span class="label">Cuentas {{ nombreMesSiguiente }}</span>
       <strong>{{ gastosSiguienteFormateado }}</strong>
     </div>
   </div>

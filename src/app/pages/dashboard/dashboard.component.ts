@@ -103,14 +103,14 @@ export class DashboardComponent implements OnInit {
           labels: data.meses.map((m) => m.etiqueta),
           datasets: [
             {
-              data: data.meses.map((m) => m.totalGanancias),
-              label: 'Ganancias del mes',
+              data: data.meses.map((m) => m.disponible),
+              label: 'Disponible del mes',
               backgroundColor: 'rgba(25, 135, 84, 0.7)',
               borderRadius: 4,
             },
             {
               data: data.meses.map((m) => m.totalGastos),
-              label: 'Gastos del mes siguiente',
+              label: 'Cuentas del mes siguiente',
               backgroundColor: 'rgba(220, 53, 69, 0.65)',
               borderRadius: 4,
             },

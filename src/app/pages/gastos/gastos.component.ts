@@ -56,9 +56,9 @@ export class GastosComponent implements OnInit {
     return {
       descripcion: '',
       monto: 0,
-      tipo: 'UNICO',
+      tipo: 'DIARIO',
       fecha: `${y}-${m}-${d}`,
-      pagado: false,
+      pagado: true,
     };
   }
 
@@ -107,6 +107,14 @@ export class GastosComponent implements OnInit {
       pagado: gasto.pagado,
     };
     this.modalAbierto = true;
+  }
+
+  onTipoChange(): void {
+    if (this.editando) {
+      return;
+    }
+    // Al cargar un diario, ya se gastó; el resto arranca pendiente
+    this.form.pagado = this.form.tipo === 'DIARIO';
   }
 
   cerrarModal(): void {
@@ -172,6 +180,8 @@ export class GastosComponent implements OnInit {
   }
 
   claseFila(tipo: TipoGasto): string {
-    return tipo === 'MENSUAL' ? 'fila-mensual' : 'fila-unico';
+    if (tipo === 'MENSUAL') return 'fila-mensual';
+    if (tipo === 'DIARIO') return 'fila-diario';
+    return 'fila-unico';
   }
 }

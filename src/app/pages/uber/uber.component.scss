@@ -39,6 +39,15 @@
     background: #0d6efd;
   }
 
+  &.diario-badge {
+    background: #c7891a;
+  }
+
+  &.disponible-badge {
+    background: #0dcaf0;
+    color: #053b45;
+  }
+
   &.gastos-badge {
     background: #dc3545;
   }
