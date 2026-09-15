@@ -34,6 +34,7 @@ export class UberComponent implements OnInit {
   mensaje = '';
   fechaActiva: string | null = null;
   totalGastosSiguiente = 0;
+  totalGastosDiarios = 0;
 
   constructor(
     private readonly gananciasService: GananciasService,
@@ -65,6 +66,14 @@ export class UberComponent implements OnInit {
     return formatearDinero(this.totalGastosSiguiente);
   }
 
+  get gastosDiariosFormateado(): string {
+    return formatearDinero(this.totalGastosDiarios);
+  }
+
+  get disponibleFormateado(): string {
+    return formatearDinero(this.disponibleActual);
+  }
+
   /** Total actual del mes (borradores en pantalla). */
   get totalActual(): number {
     if (!this.planilla) {
@@ -78,6 +87,11 @@ export class UberComponent implements OnInit {
       }
     }
     return total;
+  }
+
+  /** Plata real disponible = ganado − día a día. */
+  get disponibleActual(): number {
+    return this.totalActual - this.totalGastosDiarios;
   }
 
   /** Suma de viajes cargados en el mes en vista. */
@@ -95,16 +109,16 @@ export class UberComponent implements OnInit {
     return total;
   }
 
-  /** Porcentaje del objetivo mensual cumplido. */
+  /** Porcentaje del objetivo mensual cumplido (sobre disponible real). */
   get porcentajeObjetivo(): number {
     if (this.totalGastosSiguiente <= 0) {
       return 0;
     }
-    return (this.totalActual / this.totalGastosSiguiente) * 100;
+    return (this.disponibleActual / this.totalGastosSiguiente) * 100;
   }
 
   get anchoBarraObjetivo(): number {
-    return Math.min(this.porcentajeObjetivo, 100);
+    return Math.min(Math.max(this.porcentajeObjetivo, 0), 100);
   }
 
   get porcentajeObjetivoFormateado(): string {
@@ -117,7 +131,7 @@ export class UberComponent implements OnInit {
 
   /** Monto que falta para cubrir el gasto del mes siguiente. */
   get faltaAlObjetivo(): number {
-    return Math.max(0, this.totalGastosSiguiente - this.totalActual);
+    return Math.max(0, this.totalGastosSiguiente - this.disponibleActual);
   }
 
   /**
@@ -169,11 +183,13 @@ export class UberComponent implements OnInit {
 
     forkJoin({
       ganancias: this.gananciasService.listarMes(this.anio, this.mes),
-      gastos: this.gastosService.listarMes(next.anio, next.mes),
+      gastosSiguiente: this.gastosService.listarMes(next.anio, next.mes),
+      gastosActuales: this.gastosService.listarMes(this.anio, this.mes),
     }).subscribe({
-      next: ({ ganancias, gastos }) => {
+      next: ({ ganancias, gastosSiguiente, gastosActuales }) => {
         this.planilla = ganancias;
-        this.totalGastosSiguiente = gastos.total;
+        this.totalGastosSiguiente = gastosSiguiente.total;
+        this.totalGastosDiarios = gastosActuales.totalDiarios ?? 0;
         this.borradores = {};
         this.borradoresViajes = {};
         for (const dia of ganancias.dias) {

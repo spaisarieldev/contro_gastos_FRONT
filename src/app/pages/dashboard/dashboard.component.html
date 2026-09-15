@@ -2,7 +2,7 @@
   <div>
     <h1 class="h3 mb-1">Resumen</h1>
     <p class="text-secondary mb-0">
-      Lo que ganás en un mes cubre los gastos del mes siguiente.
+      Lo ganado este mes, menos el día a día, cubre las cuentas del mes siguiente.
     </p>
   </div>
 </div>
@@ -23,24 +23,36 @@
 
 @if (resumen) {
   <p class="text-secondary small mb-3">
-    Comparando ganancias de <strong>{{ tituloMes }}</strong>
-    con gastos de <strong>{{ tituloMesGastos }}</strong>.
+    Comparando <strong>disponible de {{ tituloMes }}</strong>
+    (ganado − día a día) con cuentas de <strong>{{ tituloMesGastos }}</strong>.
   </p>
 
-  <div class="row g-3 mb-4">
-    <div class="col-md-4">
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg">
       <div class="kpi kpi-green">
         <span>Ganancias {{ tituloMes }}</span>
         <strong>{{ formatear(resumen.totalGanancias) }}</strong>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-6 col-lg">
+      <div class="kpi kpi-amber">
+        <span>Día a día {{ tituloMes }}</span>
+        <strong>{{ formatear(resumen.totalGastosDiarios) }}</strong>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="kpi kpi-blue">
+        <span>Disponible ahora</span>
+        <strong>{{ formatear(resumen.disponible) }}</strong>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
       <div class="kpi kpi-red">
-        <span>Gastos {{ tituloMesGastos }}</span>
+        <span>Cuentas {{ tituloMesGastos }}</span>
         <strong>{{ formatear(resumen.totalGastos) }}</strong>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-12 col-lg">
       <div class="kpi" [ngClass]="claseBalance(resumen.balanceNeto)">
         @if (resumen.faltaCubrir > 0) {
           <span>Falta cubrir</span>
@@ -72,7 +84,7 @@
     </div>
     <div class="col-lg-6">
       <div class="chart-card">
-        <h3 class="h6 mb-3">Evolución: ganado (mes) vs gastos (mes siguiente)</h3>
+        <h3 class="h6 mb-3">Evolución: disponible (mes) vs cuentas (mes siguiente)</h3>
         <div class="chart-box">
           <canvas
             baseChart
