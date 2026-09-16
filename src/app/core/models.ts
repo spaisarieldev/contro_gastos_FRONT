@@ -59,6 +59,8 @@ export interface ResumenMes {
   mes: number;
   anioGastos: number;
   mesGastos: number;
+  totalGananciasUber: number;
+  totalGananciasDidi: number;
   totalGanancias: number;
   totalGastosDiarios: number;
   disponible: number;
@@ -66,7 +68,13 @@ export interface ResumenMes {
   balanceNeto: number;
   faltaCubrir: number;
   sobrante: number;
-  evolucionDiaria: { dia: number; fecha: string; monto: number }[];
+  evolucionDiaria: {
+    dia: number;
+    fecha: string;
+    montoUber: number;
+    montoDidi: number;
+    monto: number;
+  }[];
 }
 
 export interface EvolucionMensual {
@@ -77,6 +85,8 @@ export interface EvolucionMensual {
     mesGastos: number;
     etiqueta: string;
     etiquetaGastos: string;
+    totalGananciasUber: number;
+    totalGananciasDidi: number;
     totalGanancias: number;
     totalGastosDiarios: number;
     disponible: number;

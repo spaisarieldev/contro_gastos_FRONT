@@ -2,7 +2,7 @@
   <div>
     <h1 class="h3 mb-1">Resumen</h1>
     <p class="text-secondary mb-0">
-      Lo ganado este mes, menos el día a día, cubre las cuentas del mes siguiente.
+      Lo ganado este mes (Uber + DiDi), menos el día a día, cubre las cuentas del mes siguiente.
     </p>
   </div>
 </div>
@@ -30,8 +30,12 @@
   <div class="row g-3 mb-3">
     <div class="col-6 col-lg">
       <div class="kpi kpi-green">
-        <span>Ganancias {{ tituloMes }}</span>
+        <span>Total ganado {{ tituloMes }}</span>
         <strong>{{ formatear(resumen.totalGanancias) }}</strong>
+        <small class="d-block text-secondary mt-1">
+          Uber {{ formatear(resumen.totalGananciasUber) }}
+          · DiDi {{ formatear(resumen.totalGananciasDidi) }}
+        </small>
       </div>
     </div>
     <div class="col-6 col-lg">
@@ -71,7 +75,7 @@
   <div class="row g-3">
     <div class="col-lg-6">
       <div class="chart-card">
-        <h3 class="h6 mb-3">Ganancias diarias — {{ tituloMes }}</h3>
+        <h3 class="h6 mb-3">Ganancias diarias (Uber + DiDi) — {{ tituloMes }}</h3>
         <div class="chart-box">
           <canvas
             baseChart
@@ -89,7 +93,7 @@
           <canvas
             baseChart
             [data]="chartMensual"
-            [options]="chartOptions"
+            [options]="chartMensualOptions"
             [type]="'bar'"
           ></canvas>
         </div>

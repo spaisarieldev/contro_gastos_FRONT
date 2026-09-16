@@ -17,13 +17,13 @@ import {
 } from '../../core/date-utils';
 
 @Component({
-  selector: 'app-uber',
+  selector: 'app-didi',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './uber.component.html',
-  styleUrl: './uber.component.scss',
+  templateUrl: './didi.component.html',
+  styleUrl: './didi.component.scss',
 })
-export class UberComponent implements OnInit {
+export class DidiComponent implements OnInit {
   anio = new Date().getFullYear();
   mes = new Date().getMonth() + 1;
   planilla: PlanillaGanancias | null = null;
@@ -36,11 +36,11 @@ export class UberComponent implements OnInit {
   fechaActiva: string | null = null;
   totalGastosSiguiente = 0;
   totalGastosDiarios = 0;
-  totalDidi = 0;
+  totalUber = 0;
 
   constructor(
-    private readonly gananciasService: GananciasService,
     private readonly gananciasDidiService: GananciasDidiService,
+    private readonly gananciasService: GananciasService,
     private readonly gastosService: GastosService,
   ) {}
 
@@ -65,8 +65,8 @@ export class UberComponent implements OnInit {
     return formatearDinero(this.planilla?.total ?? 0);
   }
 
-  get didiFormateado(): string {
-    return formatearDinero(this.totalDidi);
+  get uberFormateado(): string {
+    return formatearDinero(this.totalUber);
   }
 
   get gastosSiguienteFormateado(): string {
@@ -81,7 +81,7 @@ export class UberComponent implements OnInit {
     return formatearDinero(this.disponibleActual);
   }
 
-  /** Total Uber del mes (borradores en pantalla). */
+  /** Total DiDi del mes (borradores en pantalla). */
   get totalActual(): number {
     if (!this.planilla) {
       return 0;
@@ -98,7 +98,7 @@ export class UberComponent implements OnInit {
 
   /** Plata real disponible = Uber + DiDi − día a día. */
   get disponibleActual(): number {
-    return this.totalActual + this.totalDidi - this.totalGastosDiarios;
+    return this.totalActual + this.totalUber - this.totalGastosDiarios;
   }
 
   get totalViajes(): number {
@@ -182,14 +182,14 @@ export class UberComponent implements OnInit {
     const next = mesSiguiente(this.anio, this.mes);
 
     forkJoin({
-      ganancias: this.gananciasService.listarMes(this.anio, this.mes),
-      didi: this.gananciasDidiService.listarMes(this.anio, this.mes),
+      ganancias: this.gananciasDidiService.listarMes(this.anio, this.mes),
+      uber: this.gananciasService.listarMes(this.anio, this.mes),
       gastosSiguiente: this.gastosService.listarMes(next.anio, next.mes),
       gastosActuales: this.gastosService.listarMes(this.anio, this.mes),
     }).subscribe({
-      next: ({ ganancias, didi, gastosSiguiente, gastosActuales }) => {
+      next: ({ ganancias, uber, gastosSiguiente, gastosActuales }) => {
         this.planilla = ganancias;
-        this.totalDidi = didi.total;
+        this.totalUber = uber.total;
         this.totalGastosSiguiente = gastosSiguiente.total;
         this.totalGastosDiarios = gastosActuales.totalDiarios ?? 0;
         this.borradores = {};
@@ -275,7 +275,7 @@ export class UberComponent implements OnInit {
   guardar(fecha: string, monto: number, viajes: number | null): void {
     this.guardando[fecha] = true;
     this.mensaje = '';
-    this.gananciasService.upsert(fecha, monto, viajes).subscribe({
+    this.gananciasDidiService.upsert(fecha, monto, viajes).subscribe({
       next: () => {
         this.guardando[fecha] = false;
         this.mensaje = `Guardado ${formatearFechaDisplay(fecha)}`;
@@ -290,7 +290,7 @@ export class UberComponent implements OnInit {
 
   borrar(dia: DiaGanancia): void {
     this.guardando[dia.fecha] = true;
-    this.gananciasService.eliminar(dia.fecha).subscribe({
+    this.gananciasDidiService.eliminar(dia.fecha).subscribe({
       next: () => {
         this.guardando[dia.fecha] = false;
         this.borradores[dia.fecha] = null;
