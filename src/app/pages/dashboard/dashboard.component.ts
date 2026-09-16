@@ -36,6 +36,32 @@ export class DashboardComponent implements OnInit {
       legend: { position: 'bottom' },
     },
     scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        ticks: {
+          callback: (value) =>
+            typeof value === 'number'
+              ? new Intl.NumberFormat('es-AR', {
+                  notation: 'compact',
+                  compactDisplay: 'short',
+                }).format(value)
+              : value,
+        },
+      },
+    },
+  };
+
+  chartMensualOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+    },
+    scales: {
       y: {
         beginAtZero: true,
         ticks: {
@@ -81,10 +107,18 @@ export class DashboardComponent implements OnInit {
           labels: data.evolucionDiaria.map((d) => String(d.dia)),
           datasets: [
             {
-              data: data.evolucionDiaria.map((d) => d.monto),
-              label: 'Ganancia diaria',
-              backgroundColor: 'rgba(13, 110, 253, 0.65)',
+              data: data.evolucionDiaria.map((d) => d.montoUber ?? 0),
+              label: 'Uber',
+              backgroundColor: 'rgba(13, 110, 253, 0.75)',
               borderRadius: 4,
+              stack: 'ganancias',
+            },
+            {
+              data: data.evolucionDiaria.map((d) => d.montoDidi ?? 0),
+              label: 'DiDi',
+              backgroundColor: 'rgba(255, 122, 0, 0.75)',
+              borderRadius: 4,
+              stack: 'ganancias',
             },
           ],
         };
