@@ -1,3 +1,21 @@
+@if (planilla) {
+  <div class="pago-avance mb-3" [class.completa]="porcentajePagado >= 100">
+    <span class="label">Pagado sobre lo juntado el mes anterior</span>
+    <div
+      class="barra-progreso"
+      [class.completa]="porcentajePagado >= 100"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-valuenow]="porcentajePagado"
+      [attr.aria-label]="'Pagado: ' + porcentajePagadoFormateado"
+    >
+      <div class="barra-fill" [style.width.%]="anchoBarraPagado"></div>
+      <span class="barra-pct">{{ porcentajePagadoFormateado }}</span>
+    </div>
+  </div>
+}
+
 <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
   <div>
     <h1 class="h3 mb-1">Gastos</h1>

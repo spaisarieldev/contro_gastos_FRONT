@@ -8,11 +8,6 @@ export const routes: Routes = [
       import('./pages/uber/uber.component').then((m) => m.UberComponent),
   },
   {
-    path: 'didi',
-    loadComponent: () =>
-      import('./pages/didi/didi.component').then((m) => m.DidiComponent),
-  },
-  {
     path: 'gastos',
     loadComponent: () =>
       import('./pages/gastos/gastos.component').then((m) => m.GastosComponent),
