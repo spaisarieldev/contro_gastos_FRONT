@@ -107,18 +107,10 @@ export class DashboardComponent implements OnInit {
           labels: data.evolucionDiaria.map((d) => String(d.dia)),
           datasets: [
             {
-              data: data.evolucionDiaria.map((d) => d.montoUber ?? 0),
+              data: data.evolucionDiaria.map((d) => d.montoUber ?? d.monto ?? 0),
               label: 'Uber',
               backgroundColor: 'rgba(13, 110, 253, 0.75)',
               borderRadius: 4,
-              stack: 'ganancias',
-            },
-            {
-              data: data.evolucionDiaria.map((d) => d.montoDidi ?? 0),
-              label: 'DiDi',
-              backgroundColor: 'rgba(255, 122, 0, 0.75)',
-              borderRadius: 4,
-              stack: 'ganancias',
             },
           ],
         };

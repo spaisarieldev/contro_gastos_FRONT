@@ -34,6 +34,8 @@ export interface PlanillaGastos {
   totalPagado: number;
   totalPendiente: number;
   totalDiarios: number;
+  totalJuntadoAnterior: number;
+  porcentajePagado: number;
   gastos: Gasto[];
 }
 
@@ -60,7 +62,6 @@ export interface ResumenMes {
   anioGastos: number;
   mesGastos: number;
   totalGananciasUber: number;
-  totalGananciasDidi: number;
   totalGanancias: number;
   totalGastosDiarios: number;
   disponible: number;
@@ -72,7 +73,6 @@ export interface ResumenMes {
     dia: number;
     fecha: string;
     montoUber: number;
-    montoDidi: number;
     monto: number;
   }[];
 }
@@ -86,7 +86,6 @@ export interface EvolucionMensual {
     etiqueta: string;
     etiquetaGastos: string;
     totalGananciasUber: number;
-    totalGananciasDidi: number;
     totalGanancias: number;
     totalGastosDiarios: number;
     disponible: number;

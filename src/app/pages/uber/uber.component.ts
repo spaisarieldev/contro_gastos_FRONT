@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { GananciasDidiService } from '../../core/ganancias-didi.service';
 import { GananciasService } from '../../core/ganancias.service';
 import { GastosService } from '../../core/gastos.service';
 import { DiaGanancia, PlanillaGanancias } from '../../core/models';
@@ -36,11 +35,9 @@ export class UberComponent implements OnInit {
   fechaActiva: string | null = null;
   totalGastosSiguiente = 0;
   totalGastosDiarios = 0;
-  totalDidi = 0;
 
   constructor(
     private readonly gananciasService: GananciasService,
-    private readonly gananciasDidiService: GananciasDidiService,
     private readonly gastosService: GastosService,
   ) {}
 
@@ -63,10 +60,6 @@ export class UberComponent implements OnInit {
 
   get totalFormateado(): string {
     return formatearDinero(this.planilla?.total ?? 0);
-  }
-
-  get didiFormateado(): string {
-    return formatearDinero(this.totalDidi);
   }
 
   get gastosSiguienteFormateado(): string {
@@ -96,9 +89,9 @@ export class UberComponent implements OnInit {
     return total;
   }
 
-  /** Plata real disponible = Uber + DiDi − día a día. */
+  /** Plata real disponible = Uber − día a día. */
   get disponibleActual(): number {
-    return this.totalActual + this.totalDidi - this.totalGastosDiarios;
+    return this.totalActual - this.totalGastosDiarios;
   }
 
   get totalViajes(): number {
@@ -183,13 +176,11 @@ export class UberComponent implements OnInit {
 
     forkJoin({
       ganancias: this.gananciasService.listarMes(this.anio, this.mes),
-      didi: this.gananciasDidiService.listarMes(this.anio, this.mes),
       gastosSiguiente: this.gastosService.listarMes(next.anio, next.mes),
       gastosActuales: this.gastosService.listarMes(this.anio, this.mes),
     }).subscribe({
-      next: ({ ganancias, didi, gastosSiguiente, gastosActuales }) => {
+      next: ({ ganancias, gastosSiguiente, gastosActuales }) => {
         this.planilla = ganancias;
-        this.totalDidi = didi.total;
         this.totalGastosSiguiente = gastosSiguiente.total;
         this.totalGastosDiarios = gastosActuales.totalDiarios ?? 0;
         this.borradores = {};

@@ -45,6 +45,22 @@ export class GastosComponent implements OnInit {
     return etiquetarMes(this.anio, this.mes);
   }
 
+  get porcentajePagado(): number {
+    return this.planilla?.porcentajePagado ?? 0;
+  }
+
+  get anchoBarraPagado(): number {
+    return Math.min(Math.max(this.porcentajePagado, 0), 100);
+  }
+
+  get porcentajePagadoFormateado(): string {
+    const pct = this.porcentajePagado;
+    if (!Number.isFinite(pct)) {
+      return '0%';
+    }
+    return `${Math.round(pct)}%`;
+  }
+
   formatear = formatearDinero;
   formatearFecha = formatearFechaDisplay;
 
