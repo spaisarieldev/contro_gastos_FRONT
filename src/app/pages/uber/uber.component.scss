@@ -1,5 +1,13 @@
 .header-badges {
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.badges-row {
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
@@ -48,13 +56,17 @@
     color: #053b45;
   }
 
+  &.falta-badge {
+    background: #dc3545;
+  }
+
   &.gastos-badge {
     background: #dc3545;
   }
 
   &.avance-badge {
     background: #198754;
-    min-width: 11rem;
+    width: 100%;
 
     &.completa {
       background: #157347;
