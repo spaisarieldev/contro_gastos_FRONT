@@ -165,7 +165,6 @@ export class UberComponent implements OnInit {
     return formatearDinero(promedio);
   }
 
-  formatearFecha = formatearFechaDisplay;
   formatear = formatearDinero;
   diaSemana = nombreDiaSemana;
 
