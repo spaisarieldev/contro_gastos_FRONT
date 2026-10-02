@@ -45,8 +45,17 @@ export class GastosComponent implements OnInit {
     return etiquetarMes(this.anio, this.mes);
   }
 
+  /** Porcentaje del monto de la lista que está marcado como pagado. */
   get porcentajePagado(): number {
-    return this.planilla?.porcentajePagado ?? 0;
+    const gastos = this.planilla?.gastos ?? [];
+    const total = gastos.reduce((acc, gasto) => acc + Number(gasto.monto), 0);
+    if (total <= 0) {
+      return 0;
+    }
+    const pagado = gastos
+      .filter((gasto) => gasto.pagado)
+      .reduce((acc, gasto) => acc + Number(gasto.monto), 0);
+    return (pagado / total) * 100;
   }
 
   get anchoBarraPagado(): number {

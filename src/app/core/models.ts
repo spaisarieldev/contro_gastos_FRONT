@@ -34,7 +34,6 @@ export interface PlanillaGastos {
   totalPagado: number;
   totalPendiente: number;
   totalDiarios: number;
-  totalJuntadoAnterior: number;
   porcentajePagado: number;
   gastos: Gasto[];
 }
