@@ -62,7 +62,6 @@
       <thead>
         <tr>
           <th>Día</th>
-          <th>Fecha</th>
           <th>Día sem.</th>
           <th>Viajes</th>
           <th>Monto</th>
@@ -77,13 +76,12 @@
             [class.row-futuro]="esFechaFutura(dia.fecha)"
           >
             <td class="celda-dia">{{ dia.dia }}</td>
-            <td class="celda-fecha">
-              {{ formatearFecha(dia.fecha) }}
+            <td class="celda-semana">
+              {{ diaSemana(dia.fecha) }}
               @if (esHoy(dia.fecha)) {
                 <span class="badge-hoy">Hoy</span>
               }
             </td>
-            <td class="celda-semana">{{ diaSemana(dia.fecha) }}</td>
             <td class="celda-viajes">
               <label class="viajes-field" [class.valor-futuro]="esFechaFutura(dia.fecha)">
                 <input
