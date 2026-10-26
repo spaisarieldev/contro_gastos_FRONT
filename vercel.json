@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/cantinero", "destination": "https://cantineroentrerriano-frontend.vercel.app/cantinero/" },
+    { "source": "/cantinero/:path*", "destination": "https://cantineroentrerriano-frontend.vercel.app/cantinero/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
