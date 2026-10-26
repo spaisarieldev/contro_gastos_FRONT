@@ -1,6 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
+    { "source": "/api/v1/(.*)", "destination": "https://cantinero-api.onrender.com/api/v1/$1" },
+    { "source": "/uploads/(.*)", "destination": "https://cantinero-api.onrender.com/uploads/$1" },
     { "source": "/cantinero", "destination": "https://cantineroentrerriano-frontend-w7gz.vercel.app/cantinero/" },
     { "source": "/cantinero/(.*)", "destination": "https://cantineroentrerriano-frontend-w7gz.vercel.app/cantinero/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
