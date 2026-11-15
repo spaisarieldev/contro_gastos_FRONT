@@ -2,7 +2,12 @@
   <div class="header-badges mb-3">
     <div class="badges-row">
       <div class="total-badge promedio-badge">
-        <span class="label">Promedio diario necesario</span>
+        <span class="label">
+          Promedio diario necesario
+          @if (diasRestantes > 0) {
+            <span class="dias-hint">({{ diasRestantes }} días)</span>
+          }
+        </span>
         <strong>{{ promedioDiarioFormateado }}</strong>
       </div>
       <div class="total-badge diario-badge">
