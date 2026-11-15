@@ -131,20 +131,43 @@ export class UberComponent implements OnInit {
     return Math.max(0, this.totalGastosSiguiente - this.disponibleActual);
   }
 
+  /**
+   * Días sobre los que se reparte lo que falta:
+   * - mes actual: desde hoy hasta fin de mes, solo días SIN monto cargado
+   *   (los días pasados vacíos, ej. 1-11, no cuentan)
+   * - mes futuro: todos los días del mes sin monto
+   * - mes pasado: 0
+   */
   get diasRestantes(): number {
-    const ultimoDia = new Date(this.anio, this.mes, 0).getDate();
+    if (!this.planilla) {
+      return 0;
+    }
+
     const hoy = new Date();
     const anioHoy = hoy.getFullYear();
     const mesHoy = hoy.getMonth() + 1;
-    const diaHoy = hoy.getDate();
+    const hoyIso = this.fechaHoyIso();
 
-    if (this.anio > anioHoy || (this.anio === anioHoy && this.mes > mesHoy)) {
-      return ultimoDia;
-    }
     if (this.anio < anioHoy || (this.anio === anioHoy && this.mes < mesHoy)) {
       return 0;
     }
-    return Math.max(0, ultimoDia - diaHoy + 1);
+
+    let contador = 0;
+    for (const dia of this.planilla.dias) {
+      const esMesFuturo =
+        this.anio > anioHoy || (this.anio === anioHoy && this.mes > mesHoy);
+      if (!esMesFuturo && dia.fecha < hoyIso) {
+        continue; // días pasados sin laburo no entran
+      }
+
+      const valor = this.borradores[dia.fecha];
+      const sinMonto =
+        valor === null || valor === undefined || Number.isNaN(Number(valor));
+      if (sinMonto) {
+        contador++;
+      }
+    }
+    return contador;
   }
 
   get promedioDiarioNecesario(): number | null {
